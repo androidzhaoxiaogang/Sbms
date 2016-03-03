@@ -1,0 +1,113 @@
+<html>
+<head>
+    <title>mongodb 测试页面 </title>
+    <script src="/static/js/jquery-1.11.1.min.js"></script>
+    <script src="/static/js/pager.js"></script>
+    <style>
+    body{margin: 0;padding: 0;font-size: 14px;font-family: tahoma, arial;background: #fff;}
+	.PagerView{color: #333;text-align: center;margin: 8px;}
+	.PagerView span{color: #999;margin: 0 1px;padding: 3px 6px;border: 1px solid #ccc;}
+	.PagerView span.on{color: #333;font-weight: bold;border: 1px solid #333;}
+	.PagerView a{color: #00f;text-decoration: none;}
+	.PagerView a span{border: 1px solid #66c;color: #33f;}
+	.PagerView a:hover span{color: #f00;background: #ff9;}
+
+    .thr table{width:100%;border:1px solid gray;border-collapse:collapse;font-size:12px;}
+    .thr table tr td,th{border:1px solid gray;border-collapse:collapse;padding-top:4px;padding-bottom:4px;}
+    .thr table tr td .exceptioninfo{width:200px;height:15px;;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .thr table tr:hover{background-color:#dddddd;cursor:pointer;}
+    #exceptionMsg{width:0px;0px;background-color:#eeeeee;position:absolute;display:none;overflow:auto;right:50px;bottom:50px;padding:10px;}
+    </style>
+    <script>
+    function showDetails(msg){
+    	$('#exceptionMsg').html($('#' + msg).html()).show().animate({
+    		width: '90%',
+    		height: '70%',
+    		opacity: 1
+    	});
+    }
+    
+    function  _select(){
+    	$('#page').val(1);
+    	$('#form').submit();
+    }
+    
+    (function(){
+    	window.onkeydown = function(e){
+    		if(e.keyCode == 27){
+    			$('#exceptionMsg').animate({
+    				width: 0,
+    				height: 0,
+    				opacity: 0
+    			});
+    		}
+    	}
+    })();
+    </script>
+</head>
+<body>
+	<div id="exceptionMsg"></div>
+	<form action="/mongo/index" method="post" id="form">
+	<div style="float:left;">
+		<table style="margin-bottom:20px;width:80%;height:100px;">
+			<tr>
+				<td>App-Name:<input type="text" name="mongoSystemException.appName" value='$!{mongoSystemException.appName}'/></td>
+				<td>Model-Name:<input type="text" name="mongoSystemException.modelName" value='$!{mongoSystemException.modelName}'/></td>
+				<td>Class-Name:<input type="text" name="mongoSystemException.className" value='$!{mongoSystemException.className}'/></td>
+				<td>Method-Name:<input type="text" name="mongoSystemException.methodName" value='$!{mongoSystemException.methodName}'/></td>
+				<td>Parameters:<input type="text" name="mongoSystemException.parameters" value='$!{mongoSystemException.parameters}'/></td>
+			</tr>
+			<tr>
+				<td>Exception-Trace:<input type="text" name="mongoSystemException.exceptionTrace"  value='$!{mongoSystemException.exceptionTrace}'/></td>
+				<td>Exception-Start-Time:<input type="text" name="startTime"  value='$!{startTime}'/></td>
+				<td>Exception-End-Time:<input type="text" name="endTime" value='$!{endTime}'/></td>
+				<td><input type="button" onclick="_select();" value="查询"/></td>
+			</tr>
+		</table>
+	</div>
+	<div class="thr">
+	<table>
+		<tr style="background-color:#cccccc;">
+			<th>序号</th>
+			<th>App-Name</th>
+			<th>Model-Name</th>
+			<th>Class-Name</th>
+			<th>Method-Name</th>
+			<th>Parameters</th>
+			<th>Exception-Trace</th>
+			<th>Exception-Time</th>
+		</tr>
+		#foreach($param in ${list})  
+    		<tr ondblclick="showDetails('s$!{velocityCount}');">
+    			<th>$!{velocityCount}</th>  
+        		<th>$!param.appName</th>  
+        		<td>$!param.modelName</td>  
+        		<td>$!param.className</td>  
+        		<td>$!param.methodName</td>  
+        		<td>$!param.parameters</td>  
+        		<td><div class="exceptioninfo" id="s$!{velocityCount}">$param.exceptionTrace</div></td>  
+        		<td>$param.exceptionTime</td>  
+   			</tr>  
+    #end  
+	</table>
+	</div>
+	<input type="hidden" value="${page}" id="page" name="page"/>
+	<div id="pager" style="padding: 4px;float:right; right:0px;"> </div>
+	</form>
+</body>
+
+<script type="text/javascript">
+<!--
+var pager = new PagerView('pager');
+pager.itemCount = ${count};
+pager.size = ${limit};
+pager.index = ${page};
+pager.onclick = function(index){
+	$('#page').val(pager.index);
+	$('#form').submit();
+};
+pager.render();
+//-->
+</script>
+
+</html>

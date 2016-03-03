@@ -1,0 +1,100 @@
+<html>
+<head>
+    <title>SpringSession 测试页面 </title>
+    <script src="/static/js/jquery-1.11.1.min.js"></script>
+    <script src="/static/js/pager.js"></script>
+    <style>
+    body{margin: 0;padding: 0;font-size: 14px;font-family: tahoma, arial;background: #fff;}
+	.PagerView{color: #333;text-align: center;margin: 8px;}
+	.PagerView span{color: #999;margin: 0 1px;padding: 3px 6px;border: 1px solid #ccc;}
+	.PagerView span.on{color: #333;font-weight: bold;border: 1px solid #333;}
+	.PagerView a{color: #00f;text-decoration: none;}
+	.PagerView a span{border: 1px solid #66c;color: #33f;}
+	.PagerView a:hover span{color: #f00;background: #ff9;}
+
+    .thr table{width:100%;border:1px solid gray;border-collapse:collapse;font-size:12px;}
+    .thr table tr td,th{border:1px solid gray;border-collapse:collapse;padding-top:4px;padding-bottom:4px;}
+    .thr table tr td .exceptioninfo{width:200px;height:15px;;display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .thr table tr:hover{background-color:#dddddd;cursor:pointer;}
+    #exceptionMsg{width:0px;0px;background-color:#eeeeee;position:absolute;display:none;overflow:auto;right:50px;bottom:50px;padding:10px;}
+    </style>
+    <script>
+var SysSecond;
+    var InterValObj;
+    $(document).ready(function () {
+        SysSecond = parseInt($("#remainSeconds").html()); //这里获取倒计时的起始时间
+        InterValObj = window.setInterval(SetRemainTime, 1000); //间隔函数，1秒执行
+    });
+
+    //将时间减去1秒，计算天、时、分、秒
+    function SetRemainTime() {
+        if (SysSecond > 0) {
+            SysSecond = SysSecond - 1;
+           $("#remainTime").html("剩余生存时间:"+SysSecond+"/秒");
+        } else {//剩余时间小于或等于0的时候，就停止间隔函数
+            location.href = "/session/index";
+            window.clearInterval(InterValObj);
+            //这里可以添加倒计时时间为0后需要执行的事件
+        }
+    }
+ 
+    </script>
+</head>
+<body>
+	<div id="exceptionMsg"></div>
+	<form action="/session/set" method="post" id="form">
+	<div style="float:left;">
+		<table style="margin-bottom:20px;width:80%;height:100px;">
+			<tr>
+				<td>sessionKey:<input type="text" name="sessionKey" value=''/></td>
+				<td>sessionValue:<input type="text" name="sessionValue" value=''/></td>
+				<td>生存时间:<input type="text" name="time" value=''/></td>
+			</tr>
+			<tr>
+				<td><input type ="submit" name="submit" value="设置session值"/></td>
+				<td><a href="/session/quit" id="quit" >设置当前session无效</a></td>
+				<td><a href="/session/index" id="quit" >刷新</a></td>
+			</tr>
+			<div id="remainTime"></div>
+		</table>
+	</div>
+	<div class="thr">
+	<table>
+		<tr style="background-color:#cccccc;">
+			<th>sessionId</th>
+			<th>maxInactiveInterval最大生存时间</th>
+			<th>LastAccessedTime最后访问时间</th>
+			<th>creationTime创造时间</th>
+		</tr>
+    		<tr>
+        		<td>$!sessionId</td>  
+        		<td id="remainSeconds">$!maxInactiveInterval</td>  
+        		<td>$!lastAccTime</td>  
+        		<td>$!creationTime</td>  
+   			</tr>  
+	</table>
+	<table>
+		<tr style="background-color:#cccccc;">
+			<th>序号</th>
+			<th>session key</th>
+			<th>session value</th>
+			<th>操作</th>
+		</tr>
+		#foreach($param in ${list})  
+    		<tr>
+        		<th>$!{velocityCount}</th>    
+        		<td>$!param.key</td>  
+        		<td>$!param.value</td>  
+        		<td><a href="/session/remove?sessionKey=$!param.key">删除</a></td>
+   			</tr>  
+   	   #end  
+	</table>
+	</div>
+	</form>
+</body>
+
+<script type="text/javascript">
+
+</script>
+
+</html>

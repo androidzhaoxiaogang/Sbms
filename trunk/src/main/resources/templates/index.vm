@@ -1,0 +1,180 @@
+<html>
+<head>
+    <title>Mybatis分页插件 - 测试页面</title>
+    <script src="/static/js/jquery-1.11.1.min.js"></script>
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .pageDetail {
+            display: none;
+        }
+
+        .show {
+            display: table-row;
+        }
+    </style>
+    <script>
+        $(function () {
+            $('#list').click(function () {
+                $('.pageDetail').toggleClass('show');
+            });
+        });
+
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="middle">
+        <h1 style="padding: 50px 0 20px;">国家(地区)列表</h1>
+
+        <form action="${request.contextPath}/countries" method="post">
+            <table class="gridtable" style="width:100%;">
+                <tr>
+                    <th>国家(地区)名称：</th>
+                    <td><input type="text" name="countryName"
+                               value="#if ($queryParam.countryName) ${queryParam.countryName} #end"/></td>
+                    <th>国家(地区)代码：</th>
+                    <td><input type="text" name="countryCode"
+                               value="#if ($queryParam.countryCode) ${queryParam.countryCode} #end"/></td>
+                    <td rowspan="2"><input type="submit" value="查询"/></td>
+                </tr>
+                <tr>
+                    <th>页码：</th>
+                    <td><input type="text" name="page" value="$page"/></td>
+                    <th>页面大小：</th>
+                    <td><input type="text" name="rows" value="$rows"/></td>
+                </tr>
+            </table>
+        </form>
+        #if($pageInfo)
+        <table class="gridtable" style="width:100%;">
+            <tr>
+                <th colspan="2">分页信息 - [<a href="javascript:;" id="list">展开/收缩</a>]</th>
+            </tr>
+            <tr class="pageDetail">
+                <th style="width: 300px;">当前页号</th>
+                <td>$pageInfo.pageNum</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>页面大小</th>
+                <td>$pageInfo.pageSize</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>起始行号(>=)</th>
+                <td>$pageInfo.startRow</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>终止行号(<=)</th>
+                <td>$pageInfo.endRow</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>总结果数</th>
+                <td>$pageInfo.total</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>总页数</th>
+                <td>$pageInfo.pages</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>第一页</th>
+                <td>$pageInfo.firstPage</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>前一页</th>
+                <td>$pageInfo.prePage</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>下一页</th>
+                <td>$pageInfo.nextPage</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>最后一页</th>
+                <td>$pageInfo.lastPage</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>是否为第一页</th>
+                <td>$pageInfo.isFirstPage</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>是否为最后一页</th>
+                <td>$pageInfo.isLastPage</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>是否有前一页</th>
+                <td>$pageInfo.hasPreviousPage</td>
+            </tr>
+            <tr class="pageDetail">
+                <th>是否有下一页</th>
+                <td>$pageInfo.hasNextPage</td>
+            </tr>
+        </table>
+        <table class="gridtable" style="width:100%;">
+            #if ($msg)
+                <tr style="color:red;">
+                    <th colspan="5">$msg</th>
+                </tr>
+            #end
+        </table>
+        <table class="gridtable" style="width:100%;">
+            <thead>
+            <tr>
+                <th colspan="4">查询结果 - [<a href="/countries/add">新增国家(地区)</a>]</th>
+            </tr>
+            <tr>
+                <th>ID</th>
+                <th>国家(地区)名</th>
+                <th>国家(地区)代码</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                
+                #foreach($country in $pageInfo.list) 
+                <tr>
+                    <td>$country.id</td>
+                    <td>$country.countryName</td>
+                    <td>$country.countryCode</td>
+                    <td style="text-align:center;">[<a
+                            href="/countries/view/$country.id">修改</a>] -
+                        [<a href="/countries/delete/$country.id">删除</a>]
+                    </td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+        <table class="gridtable" style="width:100%;text-align: center;">
+            <tr>
+                #if ($pageInfo.hasPreviousPage)
+                    <td>
+                        <a href="/countries?page=1&rows=$pageInfo.pageSize&countryName=$queryParam.countryName&countryCode=$queryParam.countryCode">首页</a>
+                    </td>
+                    <td>
+                        <a href="/countries?page=$pageInfo.prePage&rows=$pageInfo.pageSize&countryName=$queryParam.countryName&countryCode=$queryParam.countryCode">前一页</a>
+                    </td>
+                #end
+                #foreach($nav in $pageInfo.navigatepageNums ) 
+                
+                    #if ($nav == ($pageInfo.pageNum))
+                        <td style="font-weight: bold;">$nav</td>
+                    #end
+                    #if ($nav != $pageInfo.pageNum)
+                        <td>
+                            <a href="/countries?page=$nav&rows=pageInfo.pageSize&countryName=#if ($queryParam.countryName)$queryParam.countryName #end &countryCode=#if ($queryParam.countryCode) $queryParam.countryCode #end">$nav</a>
+                        </td>
+                    #end
+                #end
+                #if ($pageInfo.hasNextPage)
+                    <td>
+                        <a href="/countries?page=$pageInfo.nextPage&rows=$pageInfo.pageSize&countryName=#if ($queryParam.countryName) $queryParam.countryName #end &countryCode=#if ($queryParam.countryCode) $queryParam.countryCode #end">下一页</a>
+                    </td>
+                    <td>
+                        <a href="/countries?page=$pageInfo.pages&rows=$pageInfo.pageSize&countryName=#if ($queryParam.countryName) $queryParam.countryName #end &countryCode=#if ($queryParam.countryCode) $queryParam.countryCode #end">尾页</a>
+                    </td>
+                #end
+            </tr>
+        </table>
+    #end
+    </div>
+    <div class="push"></div>
+</div>
+</body>
+</html>

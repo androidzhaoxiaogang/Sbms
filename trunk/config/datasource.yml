@@ -1,0 +1,68 @@
+#读写分离数据源，遵循DruidAbstractDataSource规则
+dataSource:
+    reader:
+        name: readerdb
+        url: jdbc:mysql://192.168.244.129:3306/test
+        username: root
+        password: qwe123
+        dbType: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        maxActive: 20
+        minActive: 0
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+    writer:
+        name: writerdb
+        url: jdbc:mysql://192.168.244.129:3306/test
+        username: root
+        password: qwe123
+        dbType: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        maxActive: 20
+        minActive: 0
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+        
+#mongodb数据源
+mongo:
+    dbName: zgtxdb
+    addresses:
+       -
+           host: 192.168.244.129
+           port: 27017
+    builder:
+       #每个地址最大请求
+       connectionsPerHostV: 50
+       #每个地址最小请求
+       minConnectionsPerHostV: 0
+       #是否保持长链接
+       socketKeepAliveV: true
+       #连接超时时间
+       connectTimeoutV: 5000
+       #读取数据超时时间
+       socketTimeoutV: 5000
+       #是否重试机制
+       autoConnectRetryV: false
+       #长链接最大等待时间
+       maxWaitTime: 120000
+       #一个socket最大的等待请求数
+       threadsAllowedToBlockForConnectionMultiplierV: 50
+       

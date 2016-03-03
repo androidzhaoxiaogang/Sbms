@@ -1,0 +1,95 @@
+#详细配置参考spring-boot-reference-guide-zh.pdf文档387页
+server:
+    port: 8080
+    context-path: /
+    
+#安全认证配置 start 
+security:
+    user:
+       #用户名
+       name: admin  
+       #密码配置
+       password: test
+       #角色
+       #role: User
+    #ssl协议
+    #require-ssl: true
+    #Cross-site request forgery跨站请求伪造
+    enable-csrf: true 
+    headers:
+       #跨站脚本攻击(Cross Site Scripting)
+       xss: true
+       #HSTS可以用来抵御SSL剥离攻击
+       hsts: none  # none  / domain  / all
+    sessions: never # always  / never / if_required / stateless 
+    basic:
+       enabled: false 
+       #realm: Spring
+       #path: /**
+    oauth2:
+       #resource:
+          #id: service
+          #user-info-uri: http://localhost:8080/country
+       client:
+          client-id: far
+          client-secret: foo
+       authorization:
+          check-token-access: isAuthenticated()
+#安全认证配置 end
+#日志配置 start
+logging:
+    level:
+        org.springboot.web: INFO
+        org.springframework.security: DEBUG
+    path: ./logs
+    config: ./config/logback.xml
+#日志配置 end    
+spring:
+    #jpa 配置start
+    jpa:
+        database: MYSQL
+        show-sql: true
+        database-platform: org.hibernate.dialect.MySQL5Dialect
+        hibernate:
+             naming-strategy:
+                        org.hibernate.cfg.ImprovedNamingStrategy
+    #jpa 配置end
+    #数据源 配置start
+    
+#    datasource:
+#        name: test
+#        url: jdbc:mysql://localhost:3306/test
+#        username: root
+#        password: root
+#        # 使用druid数据源
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        max-active: 20
+#        initial-size: 1
+#        max-wait: 60000
+#        min-idle: 1
+#        time-between-eviction-runs-millis: 60000
+#        min-evictable-idle-time-millis: 300000
+#        validation-query: select 'x'
+#        test-while-idle: true
+#        test-on-borrow: false
+#        test-on-return: false
+#        pool-prepared-statements: true
+#        max-open-prepared-statements: 20
+    #数据源 配置end
+    #前端模板配置start
+    mvc:
+        view:
+            prefix: /templates/
+            #suffix: .ftl
+            suffix: .vm
+    #freemarker:
+    velocity:
+        cache: false
+    #前端模板配置end
+    #redis配置
+    redis:
+      host: 172.30.10.164
+      port: 6379
+      database: 0
+      timeout: 0
